@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style-products.css">
+    <script src="js/bootstrap.js"></script>
+    <title>GUSTUM</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">GUSTUM</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Товары
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li th:each="type : ${types}"><a class="dropdown-item" th:href="@{/products(typesId=${type.getId()})}" th:text="${type.getName()}">TEXT</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/basket">Корзина</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/login">Войти</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/sign">Регистрация</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'ADMIN' or ${userRole} == 'USER'">
+                    <a class="nav-link" href="/logout">Выйти</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false"th:if="${userRole} == 'ADMIN'">
+                        Другое
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+
+                        <li><a class="dropdown-item" href="/admin" th:if="${userRole} == 'ADMIN'">Админ панель</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex" th:method="GET" th:action="@{/search}">
+                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск" name="name">
+                <button class="btn btn-outline-success" type="submit">Поиск</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="content container">
+    <h3 th:if="${products.isEmpty()==true}">Ничего не найдено</h3>
+    <div class="perfumes">
+        <div class="container" style="max-width: 1980px">
+            <div class="perfumes_item">
+                <div class="perfumes_inner">
+                    <div class="perfumes_img" th:each="product:${products}">
+                        <a class="transition" th:href="@{/product(productId=${product.getId()})}" target="_blank"><img th:src="'/img/' + ${product.getId()} + '.jpg'" alt=""></a>
+                        <a class="transition perfumes_text_h2 " th:href="@{/product(productId=${product.getId()})}" target="_blank"><h2 th:text="${product.getName()}">DEVIL TENDER</h2></a>
+                        <a class="transition perfumes_text_h3 " th:href="@{/product(productId=${product.getId()})}" target="_blank"><h3 th:text="${product.getPrice()} + ' р.'">Дьявольская Красота</h3></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

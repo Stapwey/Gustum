@@ -1,0 +1,9 @@
+INSERT INTO countries (name) VALUES ('Испания');
+INSERT INTO countries (name) VALUES ('США');
+INSERT INTO countries (name) VALUES ('Германия');
+INSERT INTO countries (name) VALUES ('Россия');
+INSERT INTO countries (name) VALUES ('Италия');
+INSERT INTO countries (name) VALUES ('Нидерланды');
+INSERT INTO countries (name) VALUES ('Франция');
+INSERT INTO countries (name) VALUES ('Бельгия');
+INSERT INTO countries (name) VALUES ('Польша');

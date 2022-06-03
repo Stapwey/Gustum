@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style-product.css">
+    <script src="js/bootstrap.js"></script>
+    <title>GUSTUM</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">GUSTUM</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Товары
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li th:each="type : ${types}"><a class="dropdown-item" th:href="@{/products(typesId=${type.getId()})}" th:text="${type.getName()}">TEXT</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/basket">Корзина</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/login">Войти</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'GUEST'">
+                    <a class="nav-link" href="/sign">Регистрация</a>
+                </li>
+                <li class="nav-item" th:if="${userRole} == 'ADMIN' or ${userRole} == 'USER'">
+                    <a class="nav-link" href="/logout">Выйти</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:if="${userRole} == 'ADMIN'">
+                        Другое
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+
+                        <li><a class="dropdown-item" href="/admin" th:if="${userRole} == 'ADMIN'">Админ панель</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex" th:method="GET" th:action="@{/search}">
+                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск" name="name">
+                <button class="btn btn-outline-success" type="submit">Поиск</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="content container">
+
+
+    <div class="perfumes">
+        <div class="container">
+            <div class="product_item" >
+                <div class="product_inner" >
+                    <div><img class="product" th:src="'/img/' + ${product.getId()} + '.jpg'" alt=""></div>
+                    <div class="product_text">
+                        <h2 class="product_name" th:text="${product.getName()}">DEVIL TENDER</h2>
+                        <p class="sub_name" th:text="${product.getPrice()} + ' р.'">Дьявольская Красота</p>
+                        <ul class="details">
+                            <li>
+                                <input type="radio" name="section" id="section_0" checked="checked">
+                                <label for="section_0">Описание</label>
+                                <div style="height: 240px;">
+                                    <div>
+                                        <p th:text="${product.getDescription()}">Воплощение свободной и опасно чарующей женственности. Девственная, но скандальная, несмотря на свою милую и дерзкую внешность, она бьет в самое сердце и заставляет удовольствие длиться до экстаза.</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <input type="radio"  name="section" id="section_1">
+                                <label for="section_1">Объем</label>
+                                <div style="height: 100px;">
+                                    <div>
+                                        <p class="sub_name" th:text="${product.getWeight()}+'мл.'">Дьявольская Красота</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <input type="radio" name="section" id="section_2">
+                                <label for="section_2">Производитель</label>
+                                <div style="height: 100px;">
+                                    <div>
+                                        <p th:text="'Производитель  '+${country.getName()}">За свои чувственные и искрящиеся творения она была удостоена премии «Международный приз Jeune Parfumeur Créateur». С научной точки зрения Надеж рассматривает парфюмерию как сложное искусство.</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form th:method="POST" th:action="@{/product}" style="display: flex;margin-top: 15px;">
+        <div class="mb-3">
+            <input type="hidden" name="productId" th:value="${product.getId()}">
+            <input id="productCount" type="number" class="form-control" name="productCount" min="1" max="10" style="width: 100px;" value="1" onchange="noEmpty()">
+        </div>
+        <div class="col-auto" style="margin-left: 15px;">
+            <button type="submit" class="btn btn-primary mb-3">В корзину</button>
+        </div>
+    </form>
+    <p th:if="${Status} == 'user_guest'">Вам нужно зарегистрироваться, чтобы добавлять товар в корзину!</p>
+    <p th:if="${Status} == 'count_overflow'">Количество одного товара в корзине не может превышать 10!</p>
+    <p th:if="${Status} == 'OK'">Товар был добавлен в корзину</p>
+</div>
+</body>
+<script>
+    function noEmpty(){
+        var countEl = document.getElementById('productCount');
+        if (countEl.value == "") {
+            countEl.value = 1;
+        }
+    }
+</script>
+</html>
